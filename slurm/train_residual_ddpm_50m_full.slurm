@@ -1,0 +1,31 @@
+#!/bin/bash
+#SBATCH --job-name=ddpm50m_train
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=12
+#SBATCH --gres=gpu:1
+#SBATCH --mem=160G
+#SBATCH --time=24:00:00
+#SBATCH --account=<your_account>
+#SBATCH --partition=<gpu_partition>
+#SBATCH --output=logs/ddpm50m_train_%j.out
+#SBATCH --error=logs/ddpm50m_train_%j.err
+
+set -euo pipefail
+
+module purge
+module load python/3.12
+module load cuda
+
+source /path/to/venv/bin/activate
+
+export PROJECT_ROOT=/path/to/gefs-residual-ddpm-hpc
+export DATA_ROOT=/path/to/atmospheric_ensemble_data
+export OUTDIR=$PROJECT_ROOT/outputs/ddpm50m_full
+
+mkdir -p logs "$OUTDIR"
+
+python "$PROJECT_ROOT/scripts/train_residual_ddpm_50m.py" \
+  --config "$PROJECT_ROOT/configs/ddpm_hgt500_example.yaml" \
+  --data-root "$DATA_ROOT" \
+  --outdir "$OUTDIR"
