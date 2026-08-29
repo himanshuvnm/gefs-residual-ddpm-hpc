@@ -1,0 +1,25 @@
+dataset:
+  name: atmospheric_residual_ensemble_example
+  variable: HGT500
+  grid_shape: [120, 240]
+  ensemble_size: 31
+  description: Example configuration for a conditional residual DDPM workflow.
+
+model:
+  type: conditional_residual_ddpm
+  approximate_parameters: 50000000
+  backbone: swin_style_residual_network
+  diffusion_steps: 1000
+
+training:
+  batch_size: 4
+  learning_rate: 0.0001
+  mixed_precision: true
+  loss: residual_noise_prediction
+
+evaluation:
+  metrics:
+    - member_correlation
+    - spread_error
+    - covariance_action_error
+    - localized_covariance_response
